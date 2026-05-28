@@ -1,0 +1,12 @@
+Enter kafka bash
+docker exec -it kafka-ecom bash
+cd /opt/kafka/bin/
+
+Create Topic 
+./kafka-topics.sh --create --topic raw_events --bootstrap-server kafka:9092 --partitions 3 --replication-factor 1
+
+Show Topic list
+./kafka-topics.sh --list --bootstrap-server kafka:9092
+
+Show Topic info
+./kafka-topics.sh --describe --topic raw_events --bootstrap-server kafka:9092
