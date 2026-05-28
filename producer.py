@@ -3,7 +3,7 @@ import json
 import random
 import time
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 BOOTSTRAP_SERVERS = "localhost:29092"
 TOPIC_NAME = "raw_events"
@@ -17,6 +17,12 @@ producer = KafkaProducer(
 EVENT_TYPES = ["PAGE_VIEW", "ADD_TO_CART", "PURCHASE"]
 INVALID_EVENT_TYPES = ["CLICK", "VIEW", "PAY"]
 
+def random_timestamp_last_6_days():
+    now = datetime.now(timezone.utc)
+    past = now - timedelta(days=6)
+
+    random_seconds = random.uniform(0, (now - past).total_seconds())
+    return past + timedelta(seconds=random_seconds)
 
 def generate_event():
     """
@@ -45,7 +51,7 @@ def generate_event():
         "event_type": random.choice(INVALID_EVENT_TYPES) if invalid_field == "event_type" else event_type,
         "amount": random.uniform(-500,-10) if invalid_field == "amount" else amount,
         "currency" : None if invalid_field == "currency" else currency,
-        "event_timestamp": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(),
+        "event_timestamp": random_timestamp_last_6_days().replace(tzinfo=None).isoformat(),
         "is_valid": not is_invalid,
         "invalid_field": invalid_field
     }
